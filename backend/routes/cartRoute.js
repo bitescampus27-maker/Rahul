@@ -1,11 +1,22 @@
 import express from 'express';
-import { addToCart, getCart, removeFromCart } from '../controllers/cartController.js';
-import authMiddleware from '../middleware/auth.js';
+import { 
+  addToCart, 
+  getCart, 
+  removeFromCart, 
+  mergeCart 
+} from '../controllers/cartController.js';
 
 const cartRouter = express.Router();
 
-cartRouter.post("/get",authMiddleware,getCart);
-cartRouter.post("/add",authMiddleware,addToCart);
-cartRouter.post("/remove",authMiddleware,removeFromCart);
+// ===============================
+// CART ROUTES
+// ===============================
+
+cartRouter.post("/get", getCart);
+cartRouter.post("/add", addToCart);
+cartRouter.post("/remove", removeFromCart);
+
+// 🔥 NEW - MERGE GUEST CART AFTER LOGIN
+cartRouter.post("/merge", mergeCart);
 
 export default cartRouter;

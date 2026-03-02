@@ -2,24 +2,45 @@ import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema(
   {
-    userId: { type: String, required: true },
-
-    items: { type: Array, required: true },
-
-    amount: { type: Number, required: true },
-
-    address: { type: Object, required: true },
-
-    // NEW: Use a clean universal status
-    status: {
+    // ✅ Allow guest orders (userId not required)
+    userId: {
       type: String,
-      default: "pending", // was "Food Processing"
+      required: false,
+      default: null,
     },
 
-    payment: { type: Boolean, default: false }
-  },
+    items: {
+      type: Array,
+      required: true,
+    },
 
-  // NEW: Automatic timestamps (createdAt, updatedAt)
+    amount: {
+      type: Number,
+      required: true,
+    },
+
+    address: {
+      type: Object,
+      required: true,
+    },
+
+    // Optional delivery fee support
+    deliveryFee: {
+      type: Number,
+      default: 0,
+    },
+
+    // Order status system
+    status: {
+      type: String,
+      default: "pending",
+    },
+
+    payment: {
+      type: Boolean,
+      default: false,
+    },
+  },
   { timestamps: true }
 );
 

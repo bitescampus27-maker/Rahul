@@ -11,6 +11,10 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Verify from './pages/Verify/Verify';
 import AdminDashboard from "./components/AdminDashboard";
+import About from "./pages/About";
+import Delivery from "./pages/Delivery";
+import Privacy from "./pages/Privacy";
+
 
 const App = () => {
 
@@ -35,6 +39,9 @@ const App = () => {
           <Route path="/order" element={<PlaceOrder />} />
           <Route path="/myorders" element={<MyOrders />} />
           <Route path="/verify" element={<Verify />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/delivery" element={<Delivery />} />
+          <Route path="/privacy" element={<Privacy />} />
 
           {/* Redirect any unknown route to Home */}
           <Route path="*" element={<Navigate to="/" replace />} />

@@ -11,6 +11,7 @@ import AdminPOS from "./pages/AdminPOS/AdminPOS";
 import Settings from "./pages/Settings/Settings";
 import Kitchen from "./pages/Kitchen/Kitchen";
 import MonthlyReport from "./pages/MonthlyReport/MonthlyReport"; // ⭐ NEW
+import Categories from "./pages/Categories/Categories"; // ⭐ NEW: Import the new Categories component
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -31,6 +32,9 @@ const App = () => {
           {/* Food Management */}
           <Route path="/add" element={<Add />} />
           <Route path="/list" element={<List />} />
+
+          {/* ⭐ NEW: Category Management */}
+          <Route path="/categories" element={<Categories />} />
 
           {/* Orders */}
           <Route path="/orders" element={<Orders />} />

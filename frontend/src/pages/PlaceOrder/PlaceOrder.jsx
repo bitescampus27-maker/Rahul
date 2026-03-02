@@ -160,10 +160,12 @@ const PlaceOrder = () => {
 
     // store nice break window string for backend / display
     const address = {
-      ...data,
-      breakTimeWindow: formatBreakWindow(data.breakTime),
-      table: tableNumber
-    };
+  ...data,
+  userType,
+  breakTimeWindow: formatBreakWindow(data.breakTime),
+  table: tableNumber
+};
+
 
     try {
       const resp = await placeOrder({ address, paymentMethod: "COD" });

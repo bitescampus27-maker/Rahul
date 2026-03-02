@@ -18,6 +18,12 @@ const Sidebar = () => {
           <span>List Items</span>
         </NavLink>
 
+        {/* ⭐ NEW: Manage Categories Link */}
+        <NavLink to='/categories' className="sidebar-link">
+          <img src={assets.order_icon} alt="" />
+          <span>Manage Categories</span>
+        </NavLink>
+
         <NavLink to='/orders' className="sidebar-link">
           <img src={assets.order_icon} alt="" />
           <span>Orders</span>

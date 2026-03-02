@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Add.css";
 import { assets, url } from "../../assets/assets";
 import axios from "axios";
@@ -10,45 +10,73 @@ const Add = () => {
     name: "",
     description: "",
     price: "",
-    category: "Salad",
+    categoryId: "", // ⭐ UPDATED: Use categoryId instead of category
   });
+  const [categories, setCategories] = useState([]); // ⭐ NEW: State for fetched categories
+  const [loadingCategories, setLoadingCategories] = useState(true); // ⭐ NEW: Loading state
 
-  const onSubmitHandler = async (event) => {
-    event.preventDefault();
-
-    if (!image) {
-      toast.error("Please upload a product image.");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("name", data.name);
-    formData.append("description", data.description);
-    formData.append("price", Number(data.price));
-    formData.append("category", data.category);
-    formData.append("image", image);
-
-    try {
-      const response = await axios.post(`${url}/api/food/add`, formData);
-
-      if (response.data.success) {
-        toast.success("Product added successfully!");
-
-        setData({
-          name: "",
-          description: "",
-          price: "",
-          category: data.category,
-        });
-
-        setImage(false);
-      } else {
-        toast.error(response.data.message);
+  // ⭐ NEW: Fetch categories on component mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(`${url}/api/categories`);
+        if (response.data) {
+          setCategories(response.data);
+        }
+      } catch (error) {
+        toast.error("Failed to load categories");
+      } finally {
+        setLoadingCategories(false);
       }
-    } catch (err) {
-      toast.error("Error adding product.");
+    };
+    fetchCategories();
+  }, []);
+
+ const onSubmitHandler = async (event) => {
+  event.preventDefault();
+
+  if (!image) {
+    toast.error("Please upload a product image.");
+    return;
+  }
+
+  if (!data.categoryId) {
+    toast.error("Please select a category.");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("name", data.name);
+  formData.append("description", data.description);
+  formData.append("price", Number(data.price));
+
+  // 🔥 FIX: send as 'category' not 'categoryId'
+  formData.append("category", data.categoryId);
+
+  formData.append("image", image);
+
+  try {
+    const response = await axios.post(`${url}/api/food/add`, formData);
+
+    if (response.data.success) {
+      toast.success("Product added successfully!");
+
+      setData({
+        name: "",
+        description: "",
+        price: "",
+        categoryId: "",
+      });
+
+      setImage(false);
+    } else {
+      toast.error(response.data.message);
     }
-  };
+  } catch (err) {
+    toast.error("Error adding product.");
+  }
+};
+
 
   const onChangeHandler = (event) => {
     setData({ ...data, [event.target.name]: event.target.value });
@@ -57,7 +85,6 @@ const Add = () => {
   return (
     <div className="add-page">
       <div className="add-card">
-
         <h2 className="add-title">Add New Product</h2>
 
         <form className="add-form" onSubmit={onSubmitHandler}>
@@ -115,20 +142,23 @@ const Add = () => {
           <div className="add-row">
             <div className="add-field">
               <p className="label">Category</p>
-              <select
-                name="category"
-                value={data.category}
-                onChange={onChangeHandler}
-              >
-                <option value="Salad">Salad</option>
-                <option value="Rolls">Rolls</option>
-                <option value="Deserts">Deserts</option>
-                <option value="Sandwich">Sandwich</option>
-                <option value="Cake">Cake</option>
-                <option value="Pure Veg">Pure Veg</option>
-                <option value="Pasta">Pasta</option>
-                <option value="Noodles">Noodles</option>
-              </select>
+              {loadingCategories ? (
+                <p>Loading categories...</p> // ⭐ NEW: Loading indicator
+              ) : (
+                <select
+                  name="categoryId" // ⭐ UPDATED: Name changed to categoryId
+                  value={data.categoryId}
+                  onChange={onChangeHandler}
+                  required
+                >
+                  <option value="">Select a category</option> {/* ⭐ NEW: Default option */}
+                  {categories.map((cat) => (
+                    <option key={cat._id} value={cat._id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
+              )}
             </div>
 
             <div className="add-field">

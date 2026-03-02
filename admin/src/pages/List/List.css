@@ -1,52 +1,67 @@
-/* Page Wrapper */
+/* ================================
+   Page Wrapper
+================================ */
+
 .list-page {
   width: 100%;
   padding: 30px 40px;
   box-sizing: border-box;
 }
 
-/* Center Container */
 .list-container {
-  max-width: 900px;
+  max-width: 1000px;
   margin: 0 auto;
 }
 
 .list-title {
   font-size: 24px;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
   font-weight: 600;
 }
 
-/* Card */
+/* ================================
+   Card
+================================ */
+
 .list-card {
   background: #fff;
-  border-radius: 14px;
+  border-radius: 16px;
   padding: 20px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
   border: 1px solid #eee;
 }
 
-/* Table Header */
+/* ================================
+   Header
+================================ */
+
 .list-header {
   display: grid;
-  grid-template-columns: 1fr 2fr 1.2fr 1fr 1fr;
-  padding: 12px 10px;
+  grid-template-columns: 80px 1.5fr 1.2fr 100px 100px 200px;
+  padding: 14px 10px;
   border-bottom: 2px solid #f0f0f0;
   font-weight: 600;
   color: #333;
+  font-size: 14px;
 }
 
-/* Table Body */
+/* ================================
+   Body
+================================ */
+
 .list-body {
   width: 100%;
 }
 
-/* Table Rows */
+/* ================================
+   Rows
+================================ */
+
 .list-row {
   display: grid;
-  grid-template-columns: 1fr 2fr 1.2fr 1fr 1fr;
+  grid-template-columns: 80px 1.5fr 1.2fr 100px 100px 200px;
   align-items: center;
-  padding: 12px 10px;
+  padding: 14px 10px;
   border-bottom: 1px solid #f5f5f5;
   font-size: 14px;
   transition: 0.2s ease;
@@ -56,15 +71,94 @@
   background: #fafafa;
 }
 
-/* Food Image */
-.list-row img {
-  width: 50px;
-  height: 50px;
-  border-radius: 8px;
+/* If paused → fade row */
+.list-row.paused-row {
+  opacity: 0.6;
+}
+
+/* ================================
+   Image
+================================ */
+
+.image-wrapper {
+  position: relative;
+}
+
+.image-wrapper img {
+  width: 60px;
+  height: 60px;
+  border-radius: 10px;
   object-fit: cover;
 }
 
-/* Delete Button */
+/* Paused Badge */
+.paused-badge {
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  font-size: 11px;
+  padding: 3px 6px;
+  border-radius: 6px;
+}
+
+/* ================================
+   Status Text
+================================ */
+
+.status-text {
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.status-text.active {
+  color: #2e7d32;
+}
+
+.status-text.paused {
+  color: #d32f2f;
+}
+
+/* ================================
+   Buttons
+================================ */
+
+.action-buttons {
+  display: flex;
+  gap: 12px; /* 🔥 spacing between Pause & Delete */
+}
+
+/* Pause / Resume */
+
+.pause-btn {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  font-size: 13px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  color: #fff;
+}
+
+.pause-btn.pause {
+  background: #ff9800;
+}
+
+.pause-btn.pause:hover {
+  background: #f57c00;
+}
+
+.pause-btn.resume {
+  background: #4caf50;
+}
+
+.pause-btn.resume:hover {
+  background: #388e3c;
+}
+
+/* Delete */
+
 .delete-btn {
   background: #ff4d4d;
   color: white;
@@ -80,36 +174,36 @@
   background: #d93636;
 }
 
-/* Responsive */
-@media (max-width: 800px) {
-  .list-card {
-    padding: 15px;
-  }
+/* ================================
+   Responsive
+================================ */
 
+@media (max-width: 900px) {
   .list-header,
   .list-row {
-    grid-template-columns: 1fr 1.5fr 1fr 1fr 1fr;
+    grid-template-columns: 70px 1.5fr 1fr 80px 80px 160px;
     font-size: 12px;
   }
 
-  .list-row img {
-    width: 40px;
-    height: 40px;
+  .image-wrapper img {
+    width: 45px;
+    height: 45px;
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
   .list-header {
     display: none;
   }
 
   .list-row {
-    grid-template-columns: 1fr 2fr 1fr;
-    row-gap: 6px;
+    grid-template-columns: 1fr;
+    row-gap: 10px;
+    padding: 15px;
   }
 
-  .delete-btn {
-    padding: 6px 10px;
-    font-size: 12px;
+  .action-buttons {
+    width: 100%;
+    justify-content: space-between;
   }
 }

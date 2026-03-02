@@ -5,26 +5,53 @@ import Stripe from "stripe";
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 const currency = "inr";
-const deliveryCharge = 50;
 const frontend_URL = "http://localhost:5173";
 
-/* ================= PLACE ORDER (ONLINE) ================= */
+/* ================= SAFE ITEMS VALIDATION ================= */
+const validateItems = (items) => {
+  if (!Array.isArray(items)) return false;
+  if (items.length === 0) return false;
+
+  for (let item of items) {
+    if (!item._id || !item.name || !item.price || !item.quantity) {
+      return false;
+    }
+  }
+  return true;
+};
+
+/* ================= PLACE ORDER (ONLINE - STRIPE) ================= */
 const placeOrder = async (req, res) => {
   try {
+    const { userId, items, amount, address, deliveryFee } = req.body;
+
+    // 🔥 Validate items properly
+    if (!validateItems(items)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid cart items"
+      });
+    }
+
     const newOrder = new orderModel({
-      userId: req.body.userId,
-      items: req.body.items,
-      amount: req.body.amount,
-      address: req.body.address,
-      specialInstructions: req.body.specialInstructions || "",
+      userId: userId || null,
+      items,
+      amount,
+      address,
+      specialInstructions: address?.specialInstructions || "",
       status: "pending",
-      deliveryFee: deliveryCharge
+      deliveryFee: deliveryFee || 0,
+      payment: false
     });
 
     await newOrder.save();
-    await userModel.findByIdAndUpdate(req.body.userId, { cartData: {} });
 
-    const line_items = req.body.items.map((item) => ({
+    if (userId) {
+      await userModel.findByIdAndUpdate(userId, { cartData: {} });
+    }
+
+    // Stripe line items
+    const line_items = items.map((item) => ({
       price_data: {
         currency,
         product_data: { name: item.name },
@@ -33,14 +60,16 @@ const placeOrder = async (req, res) => {
       quantity: item.quantity,
     }));
 
-    line_items.push({
-      price_data: {
-        currency,
-        product_data: { name: "Delivery Charge" },
-        unit_amount: deliveryCharge * 100,
-      },
-      quantity: 1,
-    });
+    if (deliveryFee && deliveryFee > 0) {
+      line_items.push({
+        price_data: {
+          currency,
+          product_data: { name: "Delivery Charge" },
+          unit_amount: deliveryFee * 100,
+        },
+        quantity: 1,
+      });
+    }
 
     const session = await stripe.checkout.sessions.create({
       success_url: `${frontend_URL}/verify?success=true&orderId=${newOrder._id}`,
@@ -50,46 +79,73 @@ const placeOrder = async (req, res) => {
     });
 
     res.json({ success: true, session_url: session.url });
+
   } catch (err) {
     console.error("PLACE ORDER ERROR:", err);
-    res.json({ success: false, message: "Order failed" });
+    res.status(500).json({ success: false, message: "Order failed" });
   }
 };
 
 /* ================= PLACE ORDER (COD) ================= */
 const placeOrderCod = async (req, res) => {
   try {
+    const { userId, items, amount, address, deliveryFee } = req.body;
+
+    if (!validateItems(items)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid cart items"
+      });
+    }
+
     const newOrder = new orderModel({
-      userId: req.body.userId,
-      items: req.body.items,
-      amount: req.body.amount,
-      address: req.body.address,
-      specialInstructions: req.body.specialInstructions || "",
-      payment: true,
+      userId: userId || null,
+      items,
+      amount,
+      address,
+      specialInstructions: address?.specialInstructions || "",
+      payment: false,
       status: "pending",
-      deliveryFee: deliveryCharge
+      deliveryFee: deliveryFee || 0
     });
 
     await newOrder.save();
-    await userModel.findByIdAndUpdate(req.body.userId, { cartData: {} });
+
+    if (userId) {
+      await userModel.findByIdAndUpdate(userId, { cartData: {} });
+    }
 
     res.json({ success: true });
+
   } catch (err) {
     console.error("COD ORDER ERROR:", err);
-    res.json({ success: false });
+    res.status(500).json({ success: false, message: "COD order failed" });
   }
 };
 
-/* ================= LIST ORDERS ================= */
+/* ================= LIST ALL ORDERS ================= */
 const listOrders = async (req, res) => {
-  const orders = await orderModel.find().sort({ createdAt: -1 });
-  res.json({ success: true, data: orders });
+  try {
+    const orders = await orderModel.find().sort({ createdAt: -1 });
+    res.json({ success: true, data: orders });
+  } catch (err) {
+    res.status(500).json({ success: false });
+  }
 };
 
 /* ================= USER ORDERS ================= */
 const userOrders = async (req, res) => {
-  const orders = await orderModel.find({ userId: req.body.userId });
-  res.json({ success: true, data: orders });
+  try {
+    const { userId } = req.body;
+
+    const orders = await orderModel
+      .find({ userId })
+      .sort({ createdAt: -1 });
+
+    res.json({ success: true, data: orders });
+  } catch (err) {
+    res.status(500).json({ success: false });
+  }
 };
 
 /* ================= ACCEPT ================= */
@@ -130,7 +186,7 @@ const markDelivered = async (req, res) => {
   res.json({ success: true });
 };
 
-/* ================= VERIFY ================= */
+/* ================= VERIFY PAYMENT ================= */
 const verifyOrder = async (req, res) => {
   if (req.body.success === "true") {
     await orderModel.findByIdAndUpdate(req.body.orderId, { payment: true });
@@ -164,7 +220,7 @@ const getBillByOrderId = async (req, res) => {
 
     const bill = {
       orderId: order._id,
-      customerName: order.address?.name || "Customer",
+      customerName: order.address?.fullName || "Customer",
       items: order.items,
       amount: order.amount,
       deliveryFee: order.deliveryFee || 0,
@@ -177,6 +233,7 @@ const getBillByOrderId = async (req, res) => {
       success: true,
       bill,
     });
+
   } catch (error) {
     console.error("GET BILL ERROR:", error);
     res.status(500).json({

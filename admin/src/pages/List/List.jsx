@@ -7,9 +7,13 @@ import { toast } from 'react-toastify';
 const List = () => {
   const [list, setList] = useState([]);
 
+  // ==============================
+  // FETCH ALL FOODS (ADMIN VIEW)
+  // ==============================
   const fetchList = async () => {
     try {
-      const response = await axios.get(`${url}/api/food/list`);
+      const response = await axios.get(`${url}/api/food/list?admin=true`);
+
       if (response.data.success) {
         setList(response.data.data);
       } else {
@@ -20,14 +24,36 @@ const List = () => {
     }
   };
 
+  // ==============================
+  // DELETE FOOD
+  // ==============================
   const removeFood = async (foodId) => {
     try {
       const response = await axios.post(`${url}/api/food/remove`, { id: foodId });
+
       if (response.data.success) {
         toast.success(response.data.message);
         fetchList();
       } else {
         toast.error("Failed to delete item");
+      }
+    } catch (err) {
+      toast.error("Server error");
+    }
+  };
+
+  // ==============================
+  // TOGGLE PAUSE / RESUME
+  // ==============================
+  const toggleFood = async (foodId) => {
+    try {
+      const response = await axios.post(`${url}/api/food/toggle`, { id: foodId });
+
+      if (response.data.success) {
+        toast.success(response.data.message);
+        fetchList();
+      } else {
+        toast.error("Failed to update status");
       }
     } catch (err) {
       toast.error("Server error");
@@ -49,24 +75,52 @@ const List = () => {
             <span>Name</span>
             <span>Category</span>
             <span>Price</span>
+            <span>Status</span>
             <span>Action</span>
           </div>
 
           <div className="list-body">
-            {list.map((item, index) => (
-              <div key={index} className="list-row">
-                <img src={`${url}/images/${item.image}`} alt={item.name} />
+            {list.map((item) => (
+              <div key={item._id} className="list-row">
+
+                <div className="image-wrapper">
+                  <img
+                    src={`${url}/images/${item.image}`}
+                    alt={item.name}
+                  />
+
+                  {!item.isActive && (
+                    <div className="paused-badge">
+                      Paused
+                    </div>
+                  )}
+                </div>
 
                 <span className="food-name">{item.name}</span>
-                <span>{item.category}</span>
+                <span>{item.category?.name || 'No Category'}</span>
                 <span>{currency}{item.price}</span>
 
-                <button
-                  className="delete-btn"
-                  onClick={() => removeFood(item._id)}
-                >
-                  Delete
-                </button>
+                <span className={`status-text ${item.isActive ? "active" : "paused"}`}>
+                  {item.isActive ? "Active" : "Paused"}
+                </span>
+
+                <div className="action-buttons">
+
+                  <button
+                    className={`pause-btn ${item.isActive ? "pause" : "resume"}`}
+                    onClick={() => toggleFood(item._id)}
+                  >
+                    {item.isActive ? "Pause" : "Resume"}
+                  </button>
+
+                  <button
+                    className="delete-btn"
+                    onClick={() => removeFood(item._id)}
+                  >
+                    Delete
+                  </button>
+
+                </div>
               </div>
             ))}
           </div>
