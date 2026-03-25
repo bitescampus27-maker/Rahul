@@ -108,6 +108,30 @@
     cursor: pointer;
     transition: 0.3s ease;
 }
+/* ================= SIGN IN BUTTON ================= */
+
+.signin-btn {
+    background: linear-gradient(135deg, #ff7a18, #ffb347);
+    color: white;
+    font-size: 14px;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(255, 122, 24, 0.25);
+}
+
+.signin-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255, 122, 24, 0.35);
+}
+
+.signin-btn:active {
+    transform: translateY(0px);
+    box-shadow: 0 4px 12px rgba(255, 122, 24, 0.25);
+}
 
 .admin-btn:hover {
     background: #fff4f0;

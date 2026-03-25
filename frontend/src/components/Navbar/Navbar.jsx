@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useRef } from 'react';
 import './Navbar.css';
 import { assets } from '../../assets/assets';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
@@ -9,6 +9,8 @@ const Navbar = ({ setShowLogin }) => {
   const [menu, setMenu] = useState("home");
   const [scrolled, setScrolled] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+
+  const profileRef = useRef(null);
 
   const {
     getTotalCartAmount,
@@ -31,6 +33,20 @@ const Navbar = ({ setShowLogin }) => {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // ✅ Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (profileRef.current && !profileRef.current.contains(event.target)) {
+        setShowProfileMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
   const logout = () => {
@@ -98,14 +114,23 @@ const Navbar = ({ setShowLogin }) => {
           )}
 
           {!token ? (
-            <button onClick={() => setShowLogin(true)}>Sign In</button>
+            <button 
+  className="signin-btn"
+  onClick={() => setShowLogin(true)}
+>
+  Sign In
+</button>
           ) : (
             <div
               className="navbar-profile"
-              onMouseEnter={() => setShowProfileMenu(true)}
-              onMouseLeave={() => setShowProfileMenu(false)}
+              ref={profileRef}
             >
-              <img src={assets.profile_icon} alt="profile" />
+              {/* ✅ Click instead of hover */}
+              <img
+                src={assets.profile_icon}
+                alt="profile"
+                onClick={() => setShowProfileMenu(prev => !prev)}
+              />
 
               {showProfileMenu && (
                 <ul className="navbar-profile-dropdown">

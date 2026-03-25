@@ -106,3 +106,46 @@
         justify-content: start;
     }
 }
+/* Promo message */
+.cart-promocode-message{
+    margin-top:8px;
+    font-size:14px;
+    font-weight:500;
+    color:#2ecc71;
+}
+
+/* Fix input layout */
+.cart-promocode-input{
+    margin-top:10px;
+    display:flex;
+    align-items:center;
+    background-color:#eaeaea;
+    border-radius:4px;
+    overflow:hidden;
+}
+
+/* Input takes remaining space */
+.cart-promocode-input input{
+    flex:1;
+    background:transparent;
+    border:none;
+    outline:none;
+    padding:12px 10px;
+    font-size:14px;
+}
+
+/* Submit button */
+.cart-promocode-input button{
+    width:max(10vw,120px);
+    padding:12px 10px;
+    background-color:black;
+    border:none;
+    color:white;
+    border-radius:0;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.cart-promocode-input button:hover{
+    background:#222;
+}

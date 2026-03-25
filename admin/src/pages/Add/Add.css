@@ -105,3 +105,16 @@
   opacity: 0.85;
   transform: translateY(-2px);
 }
+.type-btn {
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+  background: white;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.type-btn.active {
+  background-color: #22c55e;
+  color: white;
+  border-color: #22c55e;
+}

@@ -9,7 +9,7 @@
 }
 
 .list-container {
-  max-width: 1000px;
+  max-width: 1100px; /* ⭐ slightly increased */
   margin: 0 auto;
 }
 
@@ -37,7 +37,7 @@
 
 .list-header {
   display: grid;
-  grid-template-columns: 80px 1.5fr 1.2fr 100px 100px 200px;
+  grid-template-columns: 80px 1.5fr 1.2fr 100px 120px 100px 200px; /* ⭐ FIXED */
   padding: 14px 10px;
   border-bottom: 2px solid #f0f0f0;
   font-weight: 600;
@@ -59,7 +59,7 @@
 
 .list-row {
   display: grid;
-  grid-template-columns: 80px 1.5fr 1.2fr 100px 100px 200px;
+  grid-template-columns: 80px 1.5fr 1.2fr 100px 120px 100px 200px; /* ⭐ FIXED */
   align-items: center;
   padding: 14px 10px;
   border-bottom: 1px solid #f5f5f5;
@@ -71,7 +71,6 @@
   background: #fafafa;
 }
 
-/* If paused → fade row */
 .list-row.paused-row {
   opacity: 0.6;
 }
@@ -91,7 +90,6 @@
   object-fit: cover;
 }
 
-/* Paused Badge */
 .paused-badge {
   position: absolute;
   bottom: 4px;
@@ -101,6 +99,29 @@
   font-size: 11px;
   padding: 3px 6px;
   border-radius: 6px;
+}
+
+/* ================================
+   Type Badge (NEW)
+================================ */
+
+.type-badge {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  width: fit-content;
+}
+
+.type-badge.packed {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.type-badge.unpacked {
+  background-color: #fee2e2;
+  color: #991b1b;
 }
 
 /* ================================
@@ -126,10 +147,9 @@
 
 .action-buttons {
   display: flex;
-  gap: 12px; /* 🔥 spacing between Pause & Delete */
+  gap: 10px;
+  flex-wrap: wrap; /* ⭐ prevents overflow */
 }
-
-/* Pause / Resume */
 
 .pause-btn {
   padding: 8px 14px;
@@ -157,8 +177,6 @@
   background: #388e3c;
 }
 
-/* Delete */
-
 .delete-btn {
   background: #ff4d4d;
   color: white;
@@ -181,7 +199,7 @@
 @media (max-width: 900px) {
   .list-header,
   .list-row {
-    grid-template-columns: 70px 1.5fr 1fr 80px 80px 160px;
+    grid-template-columns: 70px 1.2fr 1fr 80px 100px 80px 150px; /* ⭐ FIXED */
     font-size: 12px;
   }
 

@@ -10,12 +10,13 @@ const Add = () => {
     name: "",
     description: "",
     price: "",
-    categoryId: "", // ⭐ UPDATED: Use categoryId instead of category
+    categoryId: "",
+    productType: "", // ✅ NEW FIELD
   });
-  const [categories, setCategories] = useState([]); // ⭐ NEW: State for fetched categories
-  const [loadingCategories, setLoadingCategories] = useState(true); // ⭐ NEW: Loading state
 
-  // ⭐ NEW: Fetch categories on component mount
+  const [categories, setCategories] = useState([]);
+  const [loadingCategories, setLoadingCategories] = useState(true);
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -32,51 +33,54 @@ const Add = () => {
     fetchCategories();
   }, []);
 
- const onSubmitHandler = async (event) => {
-  event.preventDefault();
+  const onSubmitHandler = async (event) => {
+    event.preventDefault();
 
-  if (!image) {
-    toast.error("Please upload a product image.");
-    return;
-  }
-
-  if (!data.categoryId) {
-    toast.error("Please select a category.");
-    return;
-  }
-
-  const formData = new FormData();
-  formData.append("name", data.name);
-  formData.append("description", data.description);
-  formData.append("price", Number(data.price));
-
-  // 🔥 FIX: send as 'category' not 'categoryId'
-  formData.append("category", data.categoryId);
-
-  formData.append("image", image);
-
-  try {
-    const response = await axios.post(`${url}/api/food/add`, formData);
-
-    if (response.data.success) {
-      toast.success("Product added successfully!");
-
-      setData({
-        name: "",
-        description: "",
-        price: "",
-        categoryId: "",
-      });
-
-      setImage(false);
-    } else {
-      toast.error(response.data.message);
+    if (!image) {
+      toast.error("Please upload a product image.");
+      return;
     }
-  } catch (err) {
-    toast.error("Error adding product.");
-  }
-};
 
+    if (!data.categoryId) {
+      toast.error("Please select a category.");
+      return;
+    }
+
+    if (!data.productType) {
+      toast.error("Please select Packed or Unpacked.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("name", data.name);
+    formData.append("description", data.description);
+    formData.append("price", Number(data.price));
+    formData.append("category", data.categoryId);
+    formData.append("productType", data.productType); // ✅ SEND TO BACKEND
+    formData.append("image", image);
+
+    try {
+      const response = await axios.post(`${url}/api/food/add`, formData);
+
+      if (response.data.success) {
+        toast.success("Product added successfully!");
+
+        setData({
+          name: "",
+          description: "",
+          price: "",
+          categoryId: "",
+          productType: "", // reset
+        });
+
+        setImage(false);
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (err) {
+      toast.error("Error adding product.");
+    }
+  };
 
   const onChangeHandler = (event) => {
     setData({ ...data, [event.target.name]: event.target.value });
@@ -88,7 +92,7 @@ const Add = () => {
         <h2 className="add-title">Add New Product</h2>
 
         <form className="add-form" onSubmit={onSubmitHandler}>
-          {/* IMAGE UPLOAD */}
+          {/* IMAGE */}
           <div className="add-image-block">
             <p className="label">Product Image</p>
 
@@ -138,20 +142,51 @@ const Add = () => {
             ></textarea>
           </div>
 
+          {/* ⭐ NEW: PACKED / UNPACKED */}
+          <div className="add-field">
+            <p className="label">Product Type</p>
+
+            <div style={{ display: "flex", gap: "10px" }}>
+              <button
+                type="button"
+                className={`type-btn ${
+                  data.productType === "packed" ? "active" : ""
+                }`}
+                onClick={() =>
+                  setData({ ...data, productType: "packed" })
+                }
+              >
+                Packed
+              </button>
+
+              <button
+                type="button"
+                className={`type-btn ${
+                  data.productType === "unpacked" ? "active" : ""
+                }`}
+                onClick={() =>
+                  setData({ ...data, productType: "unpacked" })
+                }
+              >
+                Unpacked
+              </button>
+            </div>
+          </div>
+
           {/* CATEGORY + PRICE */}
           <div className="add-row">
             <div className="add-field">
               <p className="label">Category</p>
               {loadingCategories ? (
-                <p>Loading categories...</p> // ⭐ NEW: Loading indicator
+                <p>Loading categories...</p>
               ) : (
                 <select
-                  name="categoryId" // ⭐ UPDATED: Name changed to categoryId
+                  name="categoryId"
                   value={data.categoryId}
                   onChange={onChangeHandler}
                   required
                 >
-                  <option value="">Select a category</option> {/* ⭐ NEW: Default option */}
+                  <option value="">Select a category</option>
                   {categories.map((cat) => (
                     <option key={cat._id} value={cat._id}>
                       {cat.name}

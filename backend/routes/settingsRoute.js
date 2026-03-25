@@ -4,20 +4,23 @@ import SettingsModel from "../models/settingsModel.js";
 const router = express.Router();
 
 /* ============================
-   GET DELIVERY FEE
+   GET ALL SETTINGS
 ============================ */
-router.get("/delivery-fee", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     let settings = await SettingsModel.findOne();
 
-    // If no settings exist, create default one
     if (!settings) {
-      settings = await SettingsModel.create({ deliveryFee: 10 });
+      settings = await SettingsModel.create({
+        deliveryFee: 10,
+        kitchenOpen: true
+      });
     }
 
     res.json({
       success: true,
-      deliveryFee: settings.deliveryFee
+      deliveryFee: settings.deliveryFee,
+      kitchenOpen: settings.kitchenOpen
     });
 
   } catch (error) {
@@ -25,7 +28,6 @@ router.get("/delivery-fee", async (req, res) => {
     res.json({ success: false, message: "Failed to fetch settings" });
   }
 });
-
 
 
 /* ============================
@@ -41,7 +43,6 @@ router.post("/update-delivery-fee", async (req, res) => {
 
     let settings = await SettingsModel.findOne();
 
-    // Create if missing
     if (!settings) {
       settings = await SettingsModel.create({ deliveryFee });
     } else {
@@ -57,6 +58,35 @@ router.post("/update-delivery-fee", async (req, res) => {
   } catch (error) {
     console.error("Error updating settings:", error);
     res.json({ success: false, message: "Failed to update settings" });
+  }
+});
+
+
+/* ============================
+   TOGGLE KITCHEN STATUS
+============================ */
+router.post("/toggle-kitchen", async (req, res) => {
+  try {
+    let settings = await SettingsModel.findOne();
+
+    if (!settings) {
+      settings = await SettingsModel.create({
+        deliveryFee: 10,
+        kitchenOpen: true
+      });
+    }
+
+    settings.kitchenOpen = !settings.kitchenOpen;
+    await settings.save();
+
+    res.json({
+      success: true,
+      kitchenOpen: settings.kitchenOpen
+    });
+
+  } catch (error) {
+    console.error("Error toggling kitchen:", error);
+    res.json({ success: false, message: "Failed to toggle kitchen" });
   }
 });
 

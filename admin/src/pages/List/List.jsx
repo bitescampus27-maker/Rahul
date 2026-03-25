@@ -7,9 +7,6 @@ import { toast } from 'react-toastify';
 const List = () => {
   const [list, setList] = useState([]);
 
-  // ==============================
-  // FETCH ALL FOODS (ADMIN VIEW)
-  // ==============================
   const fetchList = async () => {
     try {
       const response = await axios.get(`${url}/api/food/list?admin=true`);
@@ -24,9 +21,6 @@ const List = () => {
     }
   };
 
-  // ==============================
-  // DELETE FOOD
-  // ==============================
   const removeFood = async (foodId) => {
     try {
       const response = await axios.post(`${url}/api/food/remove`, { id: foodId });
@@ -42,9 +36,6 @@ const List = () => {
     }
   };
 
-  // ==============================
-  // TOGGLE PAUSE / RESUME
-  // ==============================
   const toggleFood = async (foodId) => {
     try {
       const response = await axios.post(`${url}/api/food/toggle`, { id: foodId });
@@ -75,6 +66,7 @@ const List = () => {
             <span>Name</span>
             <span>Category</span>
             <span>Price</span>
+            <span>Type</span> {/* ⭐ NEW COLUMN */}
             <span>Status</span>
             <span>Action</span>
           </div>
@@ -99,6 +91,11 @@ const List = () => {
                 <span className="food-name">{item.name}</span>
                 <span>{item.category?.name || 'No Category'}</span>
                 <span>{currency}{item.price}</span>
+
+                {/* ⭐ PACKED / UNPACKED BADGE */}
+                <span className={`type-badge ${item.productType}`}>
+                  {item.productType === "packed" ? "Packed" : "Unpacked"}
+                </span>
 
                 <span className={`status-text ${item.isActive ? "active" : "paused"}`}>
                   {item.isActive ? "Active" : "Paused"}

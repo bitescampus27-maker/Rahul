@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Campus Bites | Canteen Portal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+font-family:Inter,sans-serif;
+min-height:100vh;
+
+background:
+linear-gradient(rgba(255,255,255,.88), rgba(255,255,255,.88)),
+url("https://images.unsplash.com/photo-1540189549336-e6e99c3679fe");
+
+background-size:cover;
+background-position:center;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+color:#1f2937;
+}
+
+.dashboard{
+width:100%;
+max-width:1000px;
+
+background:rgba(255,255,255,0.92);
+backdrop-filter:blur(14px);
+
+border-radius:22px;
+
+padding:38px;
+
+box-shadow:0 30px 70px rgba(0,0,0,.16);
+
+border:1px solid rgba(0,0,0,0.06);
+}
+
+header{
+text-align:center;
+margin-bottom:36px;
+}
+
+h1{
+margin:0;
+font-size:34px;
+font-weight:700;
+color:#ff5722;
+}
+
+.hello{
+margin-top:6px;
+font-size:16px;
+color:#374151;
+}
+
+.controls{
+margin-top:26px;
+
+display:flex;
+justify-content:center;
+gap:14px;
+flex-wrap:wrap;
+}
+
+.college-select{
+display:flex;
+align-items:center;
+gap:10px;
+
+background:rgba(255,255,255,0.95);
+
+padding:10px 14px;
+
+border-radius:14px;
+
+box-shadow:0 8px 24px rgba(0,0,0,.12);
+
+border:1px solid rgba(0,0,0,.06);
+}
+
+.college-label{
+font-size:14px;
+font-weight:600;
+color:#374151;
+}
+
+.college-select select{
+border:none;
+background:transparent;
+font-size:14px;
+font-weight:500;
+outline:none;
+cursor:pointer;
+min-width:160px;
+color:#111827;
+}
+
+.grid{
+margin-top:38px;
+
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+gap:26px;
+}
+
+.card{
+display:none;
+
+position:relative;
+
+height:240px;
+
+border-radius:18px;
+
+overflow:hidden;
+
+cursor:pointer;
+
+background:#fff;
+
+box-shadow:0 12px 32px rgba(0,0,0,.14);
+
+transition:transform .25s ease,box-shadow .25s ease;
+}
+
+.card.show{
+display:block;
+}
+
+.card:hover{
+transform:translateY(-6px);
+box-shadow:0 20px 44px rgba(0,0,0,.2);
+}
+
+.card img{
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+.overlay{
+position:absolute;
+inset:0;
+
+background:linear-gradient(to top, rgba(0,0,0,.75), rgba(0,0,0,.2));
+
+display:flex;
+align-items:flex-end;
+
+padding:18px;
+
+font-weight:600;
+
+font-size:18px;
+
+color:#fff;
+
+letter-spacing:.4px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="dashboard">
+
+<header>
+
+<h1>Campus Bites</h1>
+
+<div class="hello">
+Welcome to Campus Bites
+</div>
+
+<div class="controls">
+
+<div class="college-select">
+
+<span class="college-label">🏫 College</span>
+
+<select id="collegeSelect" onchange="applyCollege()">
+
+<option value="">
+Select your college
+</option>
+
+<option value="SRIMT">
+SRIMT
+</option>
+
+</select>
+
+</div>
+
+</div>
+
+</header>
+
+<section class="grid">
+
+<!-- NESCAFE -->
+<div class="card"
+data-colleges="SRIMT"
+data-link="http://localhost:5173/?canteen=nescafe">
+
+<img src="https://images.unsplash.com/photo-1511920170033-f8396924c348">
+
+<div class="overlay">
+Nescafe
+</div>
+
+</div>
+
+
+<!-- FAST FOOD -->
+<div class="card"
+data-colleges="SRIMT"
+data-link="http://localhost:5173/?canteen=Rahul Bhaiya">
+
+<img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd">
+
+<div class="overlay">
+Rahul Bhaiya
+</div>
+
+</div>
+
+
+<!-- SOUTH INDIAN -->
+<div class="card"
+data-colleges="SRIMT"
+data-link="http://localhost:5173/?canteen=food court">
+
+<img src="https://images.unsplash.com/photo-1589302168068-964664d93dc0">
+
+<div class="overlay">
+food court
+</div>
+
+</div>
+
+
+<!-- JUICE BAR -->
+<div class="card"
+data-colleges="SRIMT"
+data-link="http://localhost:5173/?canteen=one pour">
+
+<img src="https://images.unsplash.com/photo-1497534446932-c925b458314e">
+
+<div class="overlay">
+one pour
+</div>
+
+</div>
+
+</section>
+
+</div>
+
+
+<script>
+
+const cards = document.querySelectorAll(".card");
+
+const collegeSelect = document.getElementById("collegeSelect");
+
+function applyCollege(){
+
+const college = collegeSelect.value;
+
+localStorage.setItem("college",college);
+
+cards.forEach(card =>
+
+card.classList.toggle(
+"show",
+card.dataset.colleges.includes(college)
+)
+
+);
+
+}
+
+const savedCollege = localStorage.getItem("college");
+
+if(savedCollege){
+
+collegeSelect.value = savedCollege;
+
+applyCollege();
+
+}
+
+
+cards.forEach(card=>{
+
+card.addEventListener("click",()=>{
+
+const role = localStorage.getItem("role") || "guest";
+
+const uid = localStorage.getItem("uid") || "public";
+
+const link = card.dataset.link;
+
+window.location.href = `${link}&role=${role}&uid=${uid}`;
+
+});
+
+});
+
+</script>
+
+</body>
+</html>

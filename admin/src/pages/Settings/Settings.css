@@ -5,6 +5,16 @@
   width: 100%;
 }
 
+/* container that holds the cards horizontally */
+
+.settings-container {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+/* title */
+
 .settings-title {
   font-size: 26px;
   font-weight: 600;
@@ -16,8 +26,10 @@
   font-size: 15px;
 }
 
+/* Settings Cards */
+
 .settings-card {
-  width: 380px;
+  width: 420px;
   background: #fff;
   border-radius: 14px;
   padding: 24px 26px;
@@ -87,4 +99,53 @@
   margin-top: 12px;
   color: #2ecc71;
   font-weight: 500;
+}
+
+/* Coupon list container */
+
+.coupon-list {
+  margin-top: 10px;
+  max-height: 220px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+/* Individual coupon row */
+
+.coupon-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+  margin-bottom: 10px;
+  background: #fafafa;
+  transition: 0.2s;
+}
+
+.coupon-item:hover {
+  background: #f5f5f5;
+}
+
+.coupon-info {
+  font-size: 14px;
+  color: #333;
+}
+
+/* Delete button */
+
+.coupon-delete-btn {
+  background: #ff4d4d;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: 0.2s;
+}
+
+.coupon-delete-btn:hover {
+  background: #e63939;
 }

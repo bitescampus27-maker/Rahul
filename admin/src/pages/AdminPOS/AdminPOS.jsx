@@ -18,15 +18,14 @@ const AdminPOS = () => {
   const FOOD_API = `${API_BASE}/api/food/list`;
   const POS_ORDER_API = `${API_BASE}/api/pos/order`;
 
-  // ⭐ VALIDATE 10-digit Indian phone number
   const isValidPhone = (num) => /^[6-9]\d{9}$/.test(num);
 
-  // Load foods
   useEffect(() => {
     const fetchFoods = async () => {
       try {
         setMenuLoading(true);
         const res = await axios.get(FOOD_API);
+        console.log("FOODS API DATA:", res.data);
         const data = res.data.data || res.data.foods || res.data;
         setFoods(Array.isArray(data) ? data : []);
       } catch (err) {
@@ -38,34 +37,41 @@ const AdminPOS = () => {
     fetchFoods();
   }, []);
 
-  // Add item
-  const addToCart = (food) => {
-    setCart((prev) => {
-      const exist = prev.find((i) => i.foodId === food._id);
-      if (exist) {
-        return prev.map((i) =>
-          i.foodId === food._id ? { ...i, quantity: i.quantity + 1 } : i
-        );
-      }
-      return [
-        ...prev,
-        {
-          foodId: food._id,
-          name: food.name,
-          price: Number(food.price),
-          quantity: 1,
-        },
-      ];
-    });
-  };
+const addToCart = (food) => {
+  console.log("FOOD CLICKED:", food); // ✅ DEBUG
 
-  // Update quantity
+  setCart((prev) => {
+    const exist = prev.find((i) => i._id === food._id);
+
+    if (exist) {
+      return prev.map((i) =>
+        i._id === food._id
+          ? { ...i, quantity: i.quantity + 1 }
+          : i
+      );
+    }
+
+    return [
+      ...prev,
+      {
+        _id: food._id,
+        name: food.name,
+        price: Number(food.price),
+        quantity: 1,
+        productType: food.productType, // 🔥 MUST COME FROM DB
+      },
+    ];
+  });
+};
+
   const updateQty = (id, qty) => {
     if (qty <= 0) {
-      setCart((prev) => prev.filter((i) => i.foodId !== id));
+      setCart((prev) => prev.filter((i) => i._id !== id));
     } else {
       setCart((prev) =>
-        prev.map((i) => (i.foodId === id ? { ...i, quantity: qty } : i))
+        prev.map((i) =>
+          i._id === id ? { ...i, quantity: qty } : i
+        )
       );
     }
   };
@@ -77,24 +83,25 @@ const AdminPOS = () => {
     0
   );
 
-  // PLACE ORDER
   const placeOrder = async () => {
     if (cart.length === 0) return alert("Cart is empty");
 
-    // ⭐ Validate phone number if provided
     if (customerPhone.trim() !== "" && !isValidPhone(customerPhone.trim())) {
-      return alert("Please enter a valid 10-digit mobile number starting with 6–9.");
+      return alert("Enter valid 10-digit phone number");
     }
 
     setLoading(true);
 
     try {
       await axios.post(POS_ORDER_API, {
-        items: cart,
+        items: cart, // now includes productType
         customerName,
         customerPhone,
         orderType,
         paymentMethod,
+        amount: total,
+        status: "preparing",
+        paymentStatus: "unpaid",
       });
 
       alert("Order placed successfully!");
@@ -121,7 +128,8 @@ const AdminPOS = () => {
       <h1 className="pos-title">Restaurant POS</h1>
 
       <div className="pos-grid">
-        {/* LEFT SIDE — MENU */}
+
+        {/* LEFT */}
         <div className="pos-menu">
           <input
             type="text"
@@ -132,7 +140,7 @@ const AdminPOS = () => {
           />
 
           <div className="pos-menu-list">
-            {menuLoading && <p className="loading-text">Loading menu...</p>}
+            {menuLoading && <p>Loading menu...</p>}
 
             {!menuLoading &&
               filteredFoods.map((food) => (
@@ -141,54 +149,43 @@ const AdminPOS = () => {
                   className="pos-menu-card"
                   onClick={() => addToCart(food)}
                 >
-                  <div className="pos-menu-name">{food.name}</div>
-                  <div className="pos-menu-price">₹{food.price}</div>
+                  <div>{food.name}</div>
+                  <div>₹{food.price}</div>
                 </div>
               ))}
 
             {!menuLoading && filteredFoods.length === 0 && (
-              <p className="no-items-text">No items found</p>
+              <p>No items found</p>
             )}
           </div>
         </div>
 
-        {/* RIGHT SIDE — CART */}
+        {/* RIGHT */}
         <div className="pos-cart">
+
           <h2 className="cart-title">Current Order</h2>
 
-          <div className="cart-items">
-            {cart.length === 0 && (
-              <p className="empty-cart">Cart is empty</p>
-            )}
+          <div className="pos-top-actions">
+            <div className="pos-total">
+              <span>Total</span>
+              <span>₹{total}</span>
+            </div>
 
-            {cart.map((item) => (
-              <div key={item.foodId} className="cart-row">
-                <div>
-                  <div className="cart-item-name">{item.name}</div>
-                  <div className="cart-item-price">
-                    ₹{item.price} × {item.quantity}
-                  </div>
-                </div>
+            <div className="pos-actions">
+              <button className="btn-clear" onClick={clearCart}>
+                Clear
+              </button>
 
-                <div className="qty-controls">
-                  <button onClick={() => updateQty(item.foodId, item.quantity - 1)}>
-                    -
-                  </button>
-                  <span>{item.quantity}</span>
-                  <button onClick={() => updateQty(item.foodId, item.quantity + 1)}>
-                    +
-                  </button>
-                </div>
-              </div>
-            ))}
+              <button
+                className="btn-place"
+                disabled={loading || cart.length === 0}
+                onClick={placeOrder}
+              >
+                {loading ? "Placing..." : "Place Order"}
+              </button>
+            </div>
           </div>
 
-          <div className="pos-total">
-            <span>Total</span>
-            <span>₹{total}</span>
-          </div>
-
-          {/* CUSTOMER INPUTS */}
           <div className="pos-input-grid">
             <input
               placeholder="Customer name"
@@ -201,14 +198,17 @@ const AdminPOS = () => {
               value={customerPhone}
               maxLength={10}
               onChange={(e) => {
-                const val = e.target.value.replace(/\D/g, ""); // allow only digits
+                const val = e.target.value.replace(/\D/g, "");
                 setCustomerPhone(val);
               }}
             />
           </div>
 
           <div className="pos-input-grid">
-            <select value={orderType} onChange={(e) => setOrderType(e.target.value)}>
+            <select
+              value={orderType}
+              onChange={(e) => setOrderType(e.target.value)}
+            >
               <option value="dine-in">Dine-In</option>
               <option value="takeaway">Takeaway</option>
             </select>
@@ -222,17 +222,31 @@ const AdminPOS = () => {
             </select>
           </div>
 
-          <div className="pos-actions">
-            <button className="btn-clear" onClick={clearCart}>Clear</button>
+          <div className="cart-items">
+            {cart.length === 0 && <p>Cart is empty</p>}
 
-            <button
-              className="btn-place"
-              disabled={loading || cart.length === 0}
-              onClick={placeOrder}
-            >
-              {loading ? "Placing..." : "Place Order"}
-            </button>
+            {cart.map((item) => (
+              <div key={item._id} className="cart-row">
+                <div>
+                  <div>{item.name}</div>
+                  <div>
+                    ₹{item.price} × {item.quantity}
+                  </div>
+                </div>
+
+                <div className="qty-controls">
+                  <button onClick={() => updateQty(item._id, item.quantity - 1)}>
+                    -
+                  </button>
+                  <span>{item.quantity}</span>
+                  <button onClick={() => updateQty(item._id, item.quantity + 1)}>
+                    +
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
+
         </div>
       </div>
     </div>

@@ -89,50 +89,66 @@
 }
 
 /* ===========================
-   RIGHT — CART
+   RIGHT — CART / BILL
 =========================== */
+
 .pos-cart {
   background: #ffffff;
-  padding: 16px;
+  padding: 18px;
   border-radius: 18px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.06);
   display: flex;
   flex-direction: column;
+  height: 100%;
+  overflow: hidden; /* add this */
 }
 
 .cart-title {
   font-size: 20px;
   font-weight: 700;
-  margin-bottom: 10px;
+  margin-bottom: 14px;
+  color: #111827;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
 }
 
-/* CART ITEMS */
+/* ===========================
+   CART ITEMS
+=========================== */
+
 .cart-items {
   flex: 1;
   overflow-y: auto;
-  margin-bottom: 10px;
-  border-bottom: 1px dashed #e5e7eb;
-  padding-bottom: 10px;
+  margin-bottom: 12px;
+  padding-right: 6px;
 }
 
+/* ROW STRUCTURE */
 .cart-row {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
   align-items: center;
-  margin-bottom: 8px;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px dashed #e5e7eb;
 }
 
 .cart-item-name {
   font-weight: 600;
+  font-size: 14px;
   color: #111827;
 }
 
 .cart-item-price {
   font-size: 13px;
   color: #6b7280;
+  text-align: right;
 }
 
-/* QUANTITY */
+/* ===========================
+   QUANTITY CONTROLS
+=========================== */
+
 .qty-controls {
   display: flex;
   align-items: center;
@@ -140,41 +156,54 @@
 }
 
 .qty-controls button {
-  padding: 2px 10px;
-  border-radius: 10px;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
   border: 1px solid #e5e7eb;
   background: white;
   cursor: pointer;
   font-size: 16px;
+  font-weight: 600;
 }
 
 .qty-controls button:hover {
   background: #f3f4f6;
 }
 
-/* TOTAL */
+/* ===========================
+   BILL TOTAL
+=========================== */
+
 .pos-total {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   font-size: 18px;
   font-weight: 700;
-  margin: 12px 0;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 2px solid #f3f4f6;
+}
+
+.pos-total span:last-child {
+  color: #2563eb;
 }
 
 /* ===========================
    INPUTS
 =========================== */
+
 .pos-input-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
-  margin-bottom: 10px;
+  margin-top: 12px;
 }
 
 .pos-input-grid input,
 .pos-input-grid select {
-  padding: 10px 14px;
-  border-radius: 14px;
+  padding: 10px 12px;
+  border-radius: 12px;
   border: 1px solid #e5e7eb;
   font-size: 14px;
 }
@@ -186,21 +215,22 @@
 }
 
 /* ===========================
-   BUTTONS
+   ACTION BUTTONS
 =========================== */
+
 .pos-actions {
   display: flex;
-  gap: 12px;
-  margin-top: 10px;
+  gap: 10px;
+  margin-top: 14px;
 }
 
 .btn-clear {
   flex: 1;
   padding: 12px;
-  border-radius: 14px;
+  border-radius: 12px;
   border: 1px solid #e5e7eb;
   background: #ffffff;
-  font-size: 16px;
+  font-size: 15px;
   cursor: pointer;
   font-weight: 600;
 }
@@ -209,14 +239,13 @@
   background: #f3f4f6;
 }
 
-/* PLACE ORDER */
 .btn-place {
   flex: 1;
   padding: 12px;
-  border-radius: 14px;
+  border-radius: 12px;
   background: linear-gradient(135deg, #2563eb, #1e40af);
   color: white;
-  font-size: 16px;
+  font-size: 15px;
   cursor: pointer;
   font-weight: 700;
   border: none;
@@ -237,4 +266,9 @@
   padding: 10px;
   color: #6b7280;
   font-size: 14px;
+}
+.pos-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
 }

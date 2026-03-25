@@ -2,21 +2,49 @@ import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema(
   {
-    // ✅ Allow guest orders (userId not required)
+    orderNumber: {
+      type: String,
+      required: true,
+      unique: true
+    },
+
     userId: {
       type: String,
       required: false,
       default: null,
     },
 
-    items: {
-      type: Array,
-      required: true,
-    },
+    // ⭐ FIX: DEFINE ITEM STRUCTURE
+    items: [
+      {
+        _id: String,
+        name: String,
+        price: Number,
+        quantity: Number,
+        productType: {
+          type: String,
+          productType: {
+  type: String,
+  enum: ["packed", "unpacked"],
+  required: true
+} // ⭐ DEFAULT
+        }
+      }
+    ],
 
     amount: {
       type: Number,
       required: true,
+    },
+
+    discount: {
+      type: Number,
+      default: 0,
+    },
+
+    couponCode: {
+      type: String,
+      default: null,
     },
 
     address: {
@@ -24,13 +52,11 @@ const orderSchema = new mongoose.Schema(
       required: true,
     },
 
-    // Optional delivery fee support
     deliveryFee: {
       type: Number,
       default: 0,
     },
 
-    // Order status system
     status: {
       type: String,
       default: "pending",
@@ -40,6 +66,13 @@ const orderSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+
+    // ⭐ NEW FIELD (CRITICAL)
+    paymentMethod: {
+      type: String,
+      default: "ONLINE"
+    }
+
   },
   { timestamps: true }
 );

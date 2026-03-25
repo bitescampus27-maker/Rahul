@@ -1,4 +1,3 @@
-// App.jsx
 import React from "react";
 import Navbar from "./components/Navbar/Navbar";
 import Sidebar from "./components/Sidebar/Sidebar";
@@ -10,49 +9,41 @@ import Orders from "./pages/Orders/Orders";
 import AdminPOS from "./pages/AdminPOS/AdminPOS";
 import Settings from "./pages/Settings/Settings";
 import Kitchen from "./pages/Kitchen/Kitchen";
-import MonthlyReport from "./pages/MonthlyReport/MonthlyReport"; // ⭐ NEW
-import Categories from "./pages/Categories/Categories"; // ⭐ NEW: Import the new Categories component
+import MonthlyReport from "./pages/MonthlyReport/MonthlyReport";
+import Categories from "./pages/Categories/Categories";
 
+import KitchenProvider from "./context/KitchenContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
   return (
-    <div className="app">
-      <ToastContainer />
+    <KitchenProvider> {/* ✅ WRAP EVERYTHING */}
 
-      <Navbar />
-      <hr />
+      <div className="app">
+        <ToastContainer />
 
-      <div className="app-content">
-        <Sidebar />
+        <Navbar />
+        <hr />
 
-        {/* ⭐ ALL ROUTES HERE */}
-        <Routes>
-          {/* Food Management */}
-          <Route path="/add" element={<Add />} />
-          <Route path="/list" element={<List />} />
+        <div className="app-content">
+          <Sidebar />
 
-          {/* ⭐ NEW: Category Management */}
-          <Route path="/categories" element={<Categories />} />
-
-          {/* Orders */}
-          <Route path="/orders" element={<Orders />} />
-
-          {/* POS System */}
-          <Route path="/admin/pos" element={<AdminPOS />} />
-
-          {/* Kitchen Screen */}
-          <Route path="/kitchen" element={<Kitchen />} />
-
-          {/* Settings */}
-          <Route path="/settings" element={<Settings />} />
-
-          {/* ⭐ NEW — Monthly Report */}
-          <Route path="/monthly-report" element={<MonthlyReport />} />
-        </Routes>
+          <Routes>
+            <Route path="/" element={<AdminPOS />} />
+            <Route path="/add" element={<Add />} />
+            <Route path="/list" element={<List />} />
+            <Route path="/categories" element={<Categories />} />
+            <Route path="/orders" element={<Orders />} />
+            <Route path="/admin/pos" element={<AdminPOS />} />
+            <Route path="/kitchen" element={<Kitchen />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/monthly-report" element={<MonthlyReport />} />
+          </Routes>
+        </div>
       </div>
-    </div>
+
+    </KitchenProvider>
   );
 };
 

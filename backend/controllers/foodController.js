@@ -4,7 +4,7 @@ import fs from "fs";
 /* ================= ADD FOOD ================= */
 const addFood = async (req, res) => {
   try {
-    const { name, description, price, category } = req.body;
+    const { name, description, price, category, productType } = req.body; // ✅ ADDED
 
     if (!req.file) {
       return res.json({
@@ -13,13 +13,21 @@ const addFood = async (req, res) => {
       });
     }
 
+    if (!productType) {
+      return res.json({
+        success: false,
+        message: "Product type is required",
+      });
+    }
+
     const newFood = new foodModel({
       name,
       description,
       price,
       category,
+      productType, // ✅ ADDED
       image: req.file.filename,
-      isActive: true
+      isActive: true,
     });
 
     await newFood.save();
@@ -38,22 +46,19 @@ const addFood = async (req, res) => {
   }
 };
 
-/* ================= LIST ACTIVE FOOD (USER) ================= */
+/* ================= LIST FOOD ================= */
 const listFood = async (req, res) => {
   try {
-
     const isAdmin = req.query.admin === "true";
 
     let foods;
 
     if (isAdmin) {
-      // 🔥 Admin sees ALL foods
       foods = await foodModel
         .find({})
         .populate("category")
         .sort({ createdAt: -1 });
     } else {
-      // 🔥 User sees ONLY active foods
       foods = await foodModel
         .find({ isActive: true })
         .populate("category")
@@ -88,7 +93,6 @@ const removeFood = async (req, res) => {
       });
     }
 
-    // Delete image file
     if (food.image) {
       fs.unlink(`uploads/${food.image}`, (err) => {
         if (err) console.log("Image delete error:", err);
@@ -114,7 +118,7 @@ const removeFood = async (req, res) => {
 /* ================= UPDATE FOOD ================= */
 const updateFood = async (req, res) => {
   try {
-    const { id, name, description, price, category } = req.body;
+    const { id, name, description, price, category, productType } = req.body; // ✅ ADDED
 
     const food = await foodModel.findById(id);
 
@@ -125,7 +129,6 @@ const updateFood = async (req, res) => {
       });
     }
 
-    // If new image uploaded, delete old one
     if (req.file) {
       if (food.image) {
         fs.unlink(`uploads/${food.image}`, (err) => {
@@ -139,6 +142,7 @@ const updateFood = async (req, res) => {
     food.description = description;
     food.price = price;
     food.category = category;
+    food.productType = productType; // ✅ ADDED
 
     await food.save();
 
@@ -176,7 +180,7 @@ const toggleFoodStatus = async (req, res) => {
     res.json({
       success: true,
       message: `Food ${food.isActive ? "resumed" : "paused"} successfully`,
-      isActive: food.isActive
+      isActive: food.isActive,
     });
 
   } catch (error) {
@@ -193,5 +197,5 @@ export {
   listFood,
   removeFood,
   updateFood,
-  toggleFoodStatus
+  toggleFoodStatus,
 };
