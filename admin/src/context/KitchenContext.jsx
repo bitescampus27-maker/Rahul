@@ -8,7 +8,7 @@ const KitchenProvider = ({ children }) => {
 
   const fetchStatus = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/settings");
+      const res = await axios.get("https://rahul-joqb.onrender.com/api/settings");
       if (res.data.success) {
         setKitchenOpen(res.data.kitchenOpen);
       }
@@ -19,7 +19,7 @@ const KitchenProvider = ({ children }) => {
 
   const toggleKitchen = async () => {
     try {
-      const res = await axios.post("http://localhost:5000/api/settings/toggle-kitchen");
+      const res = await axios.post("https://rahul-joqb.onrender.com/api/settings/toggle-kitchen");
       if (res.data.success) {
         setKitchenOpen(res.data.kitchenOpen);
       }
