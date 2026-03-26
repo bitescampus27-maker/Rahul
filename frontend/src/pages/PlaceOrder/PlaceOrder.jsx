@@ -17,7 +17,7 @@ const handlePayment = async (
 ) => {
   try {
     const { data } = await axios.post(
-      "http://localhost:5000/api/payment/create-order",
+      "https://rahul-joqb.onrender.com/api/payment/create-order",
       { amount },
       { headers: token ? { token } : {} }
     );
@@ -32,7 +32,7 @@ const handlePayment = async (
       handler: async function (response) {
         try {
           const verify = await axios.post(
-            "http://localhost:5000/api/payment/verify-payment",
+            "https://rahul-joqb.onrender.com/api/payment/verify-payment",
             response
           );
 
