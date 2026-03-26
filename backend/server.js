@@ -56,7 +56,8 @@ app.use(
     origin: [
       "http://localhost:5173",
       "http://localhost:5174",
-      "https://campus-bite1.netlify.app",
+      "https://campus-bite1.netlify.app"
+       "https://campus-biteadmin.netlify.app",
     ],
     credentials: true,
   })
