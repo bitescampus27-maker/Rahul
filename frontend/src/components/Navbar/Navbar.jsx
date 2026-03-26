@@ -173,7 +173,7 @@ const Navbar = ({ setShowLogin }) => {
               className="admin-enter-btn"
               onClick={() => {
                 if (adminKey === "12345") {
-                  window.location.href = "http://localhost:5174/";
+                  window.location.href = "https://campus-biteadmin.netlify.app/";
                 } else {
                   alert("Invalid Admin Code");
                 }
