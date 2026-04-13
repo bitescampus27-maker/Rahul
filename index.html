@@ -2,281 +2,111 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Campus Bites | Canteen Portal</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+<title>I Love You Shagun ❤️</title>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
 <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+        height:100vh;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+        overflow:hidden;
+        font-family:'Poppins', sans-serif;
+    }
 
-*{
-box-sizing:border-box;
-}
+    h1 {
+        font-family:'Great Vibes', cursive;
+        font-size:70px;
+        color:white;
+        text-shadow:0 0 20px rgba(255,255,255,0.8);
+        animation: glow 2s infinite alternate;
+    }
 
-body{
-margin:0;
-font-family:Inter,sans-serif;
-min-height:100vh;
+    @keyframes glow {
+        from { text-shadow:0 0 10px #fff, 0 0 20px #ff4d6d; }
+        to { text-shadow:0 0 20px #fff, 0 0 40px #ff1e56; }
+    }
 
-background:
-linear-gradient(rgba(255,255,255,.88), rgba(255,255,255,.88)),
-url("https://images.unsplash.com/photo-1540189549336-e6e99c3679fe");
+    .heart {
+        position:absolute;
+        width:20px;
+        height:20px;
+        background:red;
+        transform:rotate(45deg);
+        animation: floatUp 6s linear infinite;
+    }
 
-background-size:cover;
-background-position:center;
+    .heart::before,
+    .heart::after {
+        content:'';
+        position:absolute;
+        width:20px;
+        height:20px;
+        background:red;
+        border-radius:50%;
+    }
 
-display:flex;
-align-items:center;
-justify-content:center;
+    .heart::before { top:-10px; left:0; }
+    .heart::after { left:-10px; top:0; }
 
-color:#1f2937;
-}
+    @keyframes floatUp {
+        0% {
+            transform:translateY(100vh) rotate(45deg);
+            opacity:1;
+        }
+        100% {
+            transform:translateY(-10vh) rotate(45deg);
+            opacity:0;
+        }
+    }
 
-.dashboard{
-width:100%;
-max-width:1000px;
+    button {
+        position:absolute;
+        bottom:40px;
+        padding:12px 25px;
+        border:none;
+        border-radius:30px;
+        background:#ff4d6d;
+        color:white;
+        font-size:16px;
+        cursor:pointer;
+        transition:0.3s;
+    }
 
-background:rgba(255,255,255,0.92);
-backdrop-filter:blur(14px);
-
-border-radius:22px;
-
-padding:38px;
-
-box-shadow:0 30px 70px rgba(0,0,0,.16);
-
-border:1px solid rgba(0,0,0,0.06);
-}
-
-header{
-text-align:center;
-margin-bottom:36px;
-}
-
-h1{
-margin:0;
-font-size:34px;
-font-weight:700;
-color:#ff5722;
-}
-
-.hello{
-margin-top:6px;
-font-size:16px;
-color:#374151;
-}
-
-.controls{
-margin-top:26px;
-
-display:flex;
-justify-content:center;
-gap:14px;
-flex-wrap:wrap;
-}
-
-.college-select{
-display:flex;
-align-items:center;
-gap:10px;
-
-background:rgba(255,255,255,0.95);
-
-padding:10px 14px;
-
-border-radius:14px;
-
-box-shadow:0 8px 24px rgba(0,0,0,.12);
-
-border:1px solid rgba(0,0,0,.06);
-}
-
-.college-label{
-font-size:14px;
-font-weight:600;
-color:#374151;
-}
-
-.college-select select{
-border:none;
-background:transparent;
-font-size:14px;
-font-weight:500;
-outline:none;
-cursor:pointer;
-min-width:160px;
-color:#111827;
-}
-
-.grid{
-margin-top:38px;
-
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-gap:26px;
-}
-
-.card{
-display:none;
-
-position:relative;
-
-height:240px;
-
-border-radius:18px;
-
-overflow:hidden;
-
-cursor:pointer;
-
-background:#fff;
-
-box-shadow:0 12px 32px rgba(0,0,0,.14);
-
-transition:transform .25s ease,box-shadow .25s ease;
-}
-
-.card.show{
-display:block;
-}
-
-.card:hover{
-transform:translateY(-6px);
-box-shadow:0 20px 44px rgba(0,0,0,.2);
-}
-
-.card img{
-width:100%;
-height:100%;
-object-fit:cover;
-}
-
-.overlay{
-position:absolute;
-inset:0;
-
-background:linear-gradient(to top, rgba(0,0,0,.75), rgba(0,0,0,.2));
-
-display:flex;
-align-items:flex-end;
-
-padding:18px;
-
-font-weight:600;
-
-font-size:18px;
-
-color:#fff;
-
-letter-spacing:.4px;
-}
-
+    button:hover {
+        background:#ff1e56;
+        transform:scale(1.1);
+    }
 </style>
 </head>
-
 <body>
 
-<div class="dashboard">
+<h1 id="text">I Love You Shagun ❤️</h1>
+<button onclick="nextPage()">Click for Surprise 💌</button>
 
-<header>
-
-<h1>Campus Bites</h1>
-
-<div class="hello">
-Welcome to Campus Bites
-</div>
-
-<div class="controls">
-
-<div class="college-select">
-
-<span class="college-label">🏫 College</span>
-
-<select id="collegeSelect" onchange="applyCollege()">
-
-<option value="">
-Select your college
-</option>
-
-<option value="SRIMT">
-SRIMT
-</option>
-
-</select>
-
-</div>
-
-</div>
-
-</header>
-
-<section class="grid">
-
-
-<!-- FAST FOOD -->
-<div class="card"
-data-colleges="SRIMT"
-data-link="https://campus-bite1.netlify.app/?canteen=Rahul Bhaiya">
-
-<img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd">
-
-<div class="overlay">
-Rahul Bhaiya
-</div>
-
-</div>
-
-</section>
 <script>
-
-const cards = document.querySelectorAll(".card");
-
-const collegeSelect = document.getElementById("collegeSelect");
-
-function applyCollege(){
-
-const college = collegeSelect.value;
-
-localStorage.setItem("college",college);
-
-cards.forEach(card =>
-
-card.classList.toggle(
-"show",
-card.dataset.colleges.includes(college)
-)
-
-);
-
+// Create floating hearts
+for(let i=0;i<40;i++){
+    let heart=document.createElement('div');
+    heart.classList.add('heart');
+    heart.style.left=Math.random()*100+'vw';
+    heart.style.animationDuration=(3+Math.random()*3)+'s';
+    heart.style.opacity=Math.random();
+    document.body.appendChild(heart);
 }
 
-const savedCollege = localStorage.getItem("college");
-
-if(savedCollege){
-
-collegeSelect.value = savedCollege;
-
-applyCollege();
-
+function nextPage(){
+    document.body.innerHTML=`
+    <div style="text-align:center;color:white;">
+        <h1 style="font-size:60px;font-family:'Great Vibes',cursive;">Forever & Always 💖</h1>
+        <p style="font-size:22px;margin-top:20px;">You are the most special person in my life Shagun ✨</p>
+        <p style="margin-top:10px;font-size:18px;">This little page is just to make you smile 😊</p>
+        <button onclick="location.reload()" style="margin-top:30px;">Back ❤️</button>
+    </div>`;
 }
-
-
-cards.forEach(card=>{
-
-card.addEventListener("click",()=>{
-
-const role = localStorage.getItem("role") || "guest";
-
-const uid = localStorage.getItem("uid") || "public";
-
-const link = card.dataset.link;
-
-window.location.href = `${link}&role=${role}&uid=${uid}`;
-
-});
-
-});
-
 </script>
 
 </body>
